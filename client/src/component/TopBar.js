@@ -18,8 +18,12 @@ import Drawer from '@material-ui/core/Drawer';
 
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import ExploreIcon from '@material-ui/icons/Explore';
+import CreateIcon from '@material-ui/icons/Create';
+import { Link } from "react-router-dom";
+import { UserContext } from "./UserContext";
+
+
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -36,6 +40,11 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+  },
+  paper: {
+    background: '#3F4B3B',
+    color: 'white',
+    borderRadius: '10px'
   },
 }));
 
@@ -80,28 +89,42 @@ export default function MenuAppBar() {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
+              <Typography variant="h6" className={classes.title} style={{marginLeft:"20px", marginTop:"20px"}}>            
+
+      Ciao Alessio!
+      </Typography>
+      <Divider/>
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListItem button key={'Impariamo Assieme!'}>
+          <ListItemIcon> <CreateIcon/> </ListItemIcon>
+          <ListItemText primary={'Impariamo Assieme!'} />
+        </ListItem>
+
+        <ListItem button key={'Esplora!'}>
+          <ListItemIcon> <ExploreIcon/> </ListItemIcon>
+          <Link to="/explore" style={{textDecoration:"none", color:"white"}}>
+          <ListItemText primary={'Esplora!'} />
+          </Link>
+        </ListItem>
+
+        <ListItem button key={'Chiacchera con la mascotte'}>
+          <ListItemIcon> <ExploreIcon/> </ListItemIcon>
+          <ListItemText primary={'Chiacchera con la mascotte'} />
+        </ListItem>
       </List>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+      <ListItem button key={'Esci dal tuo account'}>
+          <ListItemText primary={'Esci dal tuo account'} />
+        </ListItem>
       </List>
     </div>
   );
 
 
   return (
+    <UserContext.Consumer>
+    {(context) => (
     <>
     <div className={classes.root}>
       <AppBar position="static" style={{backgroundColor:"#3F4B3B", width:"100%", marginTop:"8px", borderRadius:"10px"}} >
@@ -109,13 +132,18 @@ export default function MenuAppBar() {
           <IconButton edge="start" className={classes.menuButton} aria-label="menu" onClick={toggleDrawer('left', true)}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>            
+            
+          <Typography variant="h6" className={classes.title}>       
+          <Link to="/" style={{textDecoration:"none", color:"white"}}>     
             SocialPark 
-<ChildCareIcon />
-</Typography>
-<Typography variant="overline"  style={{fontSize:'8px',align:'right', marginTop:'7px', marginLeft:'15px' }}>
-    Modalitá esplora!
+            
+        <ChildCareIcon />
+        </Link>
           </Typography>
+
+          <Link to = {context.authUser==null ? "/login": "/"} >
+              <Button variant="outline-info" style = {{backgroundColor:"#3F4B3B"}}
+                onClick = {() => {context.logoutUser()}}>{context.authUser==null? "Login": "Log out"}</Button> </Link>
           
           {auth && (
             <div>
@@ -154,7 +182,7 @@ export default function MenuAppBar() {
     <div>
       {['left'].map((anchor) => (
         <React.Fragment key={anchor}>
-          <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+          <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)} classes={{ paper: classes.paper }}>
             {list(anchor)}
           </Drawer>
         </React.Fragment>
@@ -162,6 +190,9 @@ export default function MenuAppBar() {
     </div>
 
 </>
+    )}
+        </UserContext.Consumer>
+
   );
 }
 

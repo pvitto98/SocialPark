@@ -4,26 +4,29 @@ import Container from "@material-ui/core/Container";
 import Switch from "react-bootstrap/esm/Switch";
 import {Route } from "react-router-dom";
 import "./App.css";
-//import API from "./api/API";
 import { AuthContext } from "./auth/AuthContext";
 import { withRouter } from 'react-router-dom';
 import TopBar from "./component/TopBar";
 import { sizing } from '@material-ui/system';
 import Box from '@material-ui/core/Box';
-import ExploreCard from "./component/Card";
+import ExploreCard from "./component/ExploreCard";
 import Sidebar from "./component/Sidebar"
+import Homepage from "./component/Homepage"
+import Profile from "./component/Profile"
+import CreateExploreCard from "./component/CreateExploreCard"
+import LoginForm from "./component/LoginForm";
+import API from "./api/API";
+import { UserContext } from "./component/UserContext";
 
 
 class App extends React.Component {
 
   constructor(props)  {
     super(props);
-    this.state = {content: {description: "ciii"}};
-    console.log(this.state.content);
+    this.state=[];
   }
 
-  /*
-
+  
   componentDidMount() {
     //check if the user is authenticated
     API.isAuthenticated().then(
@@ -32,7 +35,7 @@ class App extends React.Component {
       }
     ).catch((err) => { 
       this.setState({authErr: err.errorObj});
-      //this.props.history.push("/login");
+      this.props.history.push("/login");
     });
   }
 
@@ -50,7 +53,7 @@ class App extends React.Component {
   // Add a logout method
   logout = () => {
     API.userLogout().then(() => {
-      this.setState({authUser: null,authErr: null, tasks: null, id: -1, subjectName: "", students: []});
+      this.setState({authUser: null,authErr: null, profile : {}});
     });
   }
 
@@ -58,24 +61,27 @@ class App extends React.Component {
   login = (username, password) => {
     API.userLogin(username, password).then(
       (user) => { 
-        API.getStudentsForAnExam(user.id)
-          .then((students) => {
-            this.setState({ authUser: user, authErr: null});
-            //this.props.history.push("/teacherPortal");
+        API.getProfile(1)
+          .then((profile) => {
+
+            this.setState({ authUser: user, authErr: null, profile: profile});
+            console.log("Login fatto!");
+            console.log(this.state.authUser);
           })
           .catch((errorObj) => {
+            console.log("weeoew");
             this.handleErrors(errorObj);
         });
       }
     ).catch(
       (errorObj) => {
-        const err0 = errorObj.errors[0];
-        this.setState({authErr: err0});
+        //const err0 = errorObj.errors[0];
+        //this.setState({authErr: err0});
       }
     );
   }
   
-  */
+  
   render() {
     // compose value prop as object with user object and logout method
     const value = {
@@ -87,24 +93,39 @@ class App extends React.Component {
 
   
     return (
-      <AuthContext.Provider value={value}>
+      <UserContext.Provider value={value}>
         <Container id="upperContainer" >
         <TopBar />
         <Box width="100%" >
-          <ExploreCard props={this.state.content[0]}/>
+
             <Switch>
-
               {/* Common routes */}
-
               <Route exact path="/">
+                <Homepage/>
+
               </Route>
 
+              <Route exact path="/explore">
+                <ExploreCard/>
+              </Route>
+
+              <Route path = "/explore/createExploreCard">
+                <CreateExploreCard/>
+              </Route>
+
+              <Route path = "/profile">
+                <Profile/>
+              </Route>
+
+              <Route path = "/login">
+                <LoginForm/>
+              </Route>
 
               
             </Switch>
         </Box>
         </Container>
-      </AuthContext.Provider>
+      </UserContext.Provider>
     );
   }
 }
