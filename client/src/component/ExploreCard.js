@@ -16,6 +16,8 @@ import Container from "react-bootstrap/Container"
 import Button from 'react-bootstrap/Button'
 import { Link } from "react-router-dom";
 import { UserContext } from "./UserContext";
+import {Redirect} from 'react-router-dom';
+
 
 
 import API from "../api/API";
@@ -82,10 +84,14 @@ const ExploreCard = () => {
 
   //sliding part
   useEffect(() => {
-    API.getPosts(contextValue.authUser.idUtente).then((posts)=>{
-      setExploreCard(posts);
-      console.log("fatto");
-    })
+    if(contextValue.authUser){
+      API.getPosts(contextValue.authUser.idUtente).then((posts)=>{
+        setExploreCard(posts);
+        //console.log("fatto");
+      })
+    } else {
+      //return <Redirect to='/login'/>;
+    }
   },[]);
 
 

@@ -108,7 +108,32 @@ async function getProfile(idUtente) {
 }
 
 
+async function createAccount(newAccount) {
+    return new Promise((resolve, reject) => {
+        console.log(newAccount);
+        fetch(baseURL + "/user", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newAccount),
+        }).then( (response) => {
+            if(response.ok) {
+                response.json().then((x)=>{
+                    resolve(x.userId);
+                });
+            } else {
+                // analyze the cause of error
+                response.json()
+                .then( (obj) => {reject(obj);} ) // error msg in the response body
+                .catch( (err) => {reject({ errors: [{ param: "Application", msg: "Cannot parse server response" }] }) }); // something else
+            }
+        }).catch( (err) => {reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] }) }); // connection errors
+    });
+}
 
 
-const API = {isAuthenticated, userLogin, userLogout, getPosts, createPost, getProfile} ;
+
+
+const API = {isAuthenticated, userLogin, userLogout, getPosts, createPost, getProfile, createAccount };
 export default API;

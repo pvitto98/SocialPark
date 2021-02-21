@@ -6,7 +6,9 @@ import Col from 'react-bootstrap/Col';
 import Button from'react-bootstrap/Button';
 import Alert from'react-bootstrap/Alert';
 import {Redirect} from 'react-router-dom';
-import {UserContext} from './UserContext'
+import {UserContext} from './UserContext';
+import { Link } from "react-router-dom";
+
 
 class LoginForm extends React.Component {
     
@@ -66,6 +68,15 @@ class LoginForm extends React.Component {
                                 </Form.Group>
 
                                 <Button variant="primary" type="submit">Login</Button>
+                                <Form.Group> 
+                                Non sei ancora iscritto?
+                                </Form.Group>
+                                <Form.Group> 
+                                <Link to="/signingUp" style={{textDecoration:"none", color:"#3F4B3B"}}>
+                                <Button variant="primary" type="submit">Iscriviti</Button>
+                                </Link>
+                                </Form.Group>
+
 
                             </Form>
 

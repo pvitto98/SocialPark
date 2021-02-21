@@ -58,6 +58,7 @@ exports.getUserById = function (id) {
   
 exports.getProfile = function (idUtente) {
     console.log("getProfile");
+    console.log(idUtente);
     return new Promise((resolve, reject) => {
         const sql = "SELECT * FROM utente, profilo WHERE profilo.idUtente = ? AND profilo.idUtente == utente.idUtente"
         db.all(sql, [idUtente], (err, rows) => {
@@ -74,7 +75,7 @@ exports.getProfile = function (idUtente) {
             }
             else{
                 console.log(rows);
-                resolve({idUtente:rows[0].idUtente, nome:rows[0].nome, cognome:rows[0].cognome, email:rows[0].email, proPic:rows[0].proPic, bio: rows[0].bio});
+                resolve({idUser:rows[0].idUtente, name:rows[0].nome, surname:rows[0].cognome, username :rows[0].email, proPic:rows[0].proPic, bio: rows[0].bio});
             }
         });
     });
@@ -88,3 +89,34 @@ exports.checkPassword = function(user, password){
     console.log("DONE");
     return bcrypt.compareSync(password, user.hash);
 }
+
+exports.createUser = function(newAccount) {
+    return new Promise((resolve, reject) => {
+        let newId;
+        let hash = bcrypt.hashSync(newAccount.password, 10);
+        console.log(newAccount)
+        const sql = 'INSERT INTO utente(nome,cognome,email,hash,proPic) VALUES(?,?,?,?,?)';
+        db.run(sql, [newAccount.name,newAccount.surname,newAccount.username, hash, newAccount.proPic], function (err) {
+            if(err){
+                console.log(err);
+                reject(err);
+            }
+            else{
+                newId = this.lastID;
+            }
+        });
+
+        const sql1 = 'INSERT INTO profilo(idUtente,dataNascita,luogoNascita,interessi,bio) VALUES(?,?,?,?,?)';
+        db.run(sql1, [newId,"","","",""], function (err) {
+            if(err){
+                console.log(err);
+                reject(err);
+            }
+            else{
+                console.log("fatto");
+                resolve(newId);
+            }
+        });
+
+    });
+  }

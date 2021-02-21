@@ -13,10 +13,12 @@ import ExploreCard from "./component/ExploreCard";
 import Sidebar from "./component/Sidebar"
 import Homepage from "./component/Homepage"
 import Profile from "./component/Profile"
+import SigningUp from "./component/SigningUp"
 import CreateExploreCard from "./component/CreateExploreCard"
 import LoginForm from "./component/LoginForm";
 import API from "./api/API";
 import { UserContext } from "./component/UserContext";
+import NewAccount from "./api/NewAccount";
 
 
 class App extends React.Component {
@@ -35,7 +37,7 @@ class App extends React.Component {
       }
     ).catch((err) => { 
       this.setState({authErr: err.errorObj});
-      this.props.history.push("/login");
+      //this.props.history.push("/login");
     });
   }
 
@@ -45,7 +47,7 @@ class App extends React.Component {
     if (err) {
         if (err.status && err.status === 401) {
           this.setState({authErr: err.errorObj});
-          this.props.history.push("/login");
+          //this.props.history.push("/login");
         }
     }
 }
@@ -53,7 +55,7 @@ class App extends React.Component {
   // Add a logout method
   logout = () => {
     API.userLogout().then(() => {
-      this.setState({authUser: null,authErr: null, profile : {}});
+      this.setState({authUser: null,authErr: null, profile : null});
     });
   }
 
@@ -61,12 +63,12 @@ class App extends React.Component {
   login = (username, password) => {
     API.userLogin(username, password).then(
       (user) => { 
-        API.getProfile(1)
+        console.log(user.idUtente);
+        API.getProfile(user.idUtente)
           .then((profile) => {
-
             this.setState({ authUser: user, authErr: null, profile: profile});
+            console.log(this.state.profile);
             console.log("Login fatto!");
-            console.log(this.state.authUser);
           })
           .catch((errorObj) => {
             console.log("weeoew");
@@ -74,6 +76,16 @@ class App extends React.Component {
         });
       }
     ).catch(
+      (errorObj) => {
+        //const err0 = errorObj.errors[0];
+        //this.setState({authErr: err0});
+      }
+    );
+  }
+
+  createAccount = (name, surname, proPic, username, password) => {
+    let newAccount = new NewAccount(name, surname, proPic, username,password);
+    API.createAccount(newAccount).catch(
       (errorObj) => {
         //const err0 = errorObj.errors[0];
         //this.setState({authErr: err0});
@@ -89,6 +101,8 @@ class App extends React.Component {
       authErr: this.state.authErr,
       loginUser: this.login,
       logoutUser: this.logout,
+      createAccount: this.createAccount,
+      profile: this.state.profile
     };
 
   
@@ -99,10 +113,8 @@ class App extends React.Component {
         <Box width="100%" >
 
             <Switch>
-              {/* Common routes */}
               <Route exact path="/">
                 <Homepage/>
-
               </Route>
 
               <Route exact path="/explore">
@@ -121,7 +133,10 @@ class App extends React.Component {
                 <LoginForm/>
               </Route>
 
-              
+              <Route path = "/signingUp">
+              <SigningUp/>
+              </Route>
+
             </Switch>
         </Box>
         </Container>

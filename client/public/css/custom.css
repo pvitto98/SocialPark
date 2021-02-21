@@ -1,3 +1,78 @@
+#upperContainer{
+    min-width: 100% ;
+}
+
 #root{
     color: blue;
 }
+
+.HomePageCard{
+    position: absolute;
+    width: 25%;
+    height: 30%;
+    min-width: 160px;
+    min-height: 200px;
+    margin-top: 5%;
+    background-color: #3F4B3B;
+
+}
+
+#media{
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#impariamoAssieme{
+    left: 5%;
+    background-color: #3F4B3B;
+}
+
+#chiaccheraConLaMascotte{
+    top:300px;
+    left:5%;
+}
+
+#profilo{
+    top:300px;
+    left: 55%;
+}
+
+#esplora {
+    left: 55%;
+}
+
+.scrittaCard{
+    position: absolute;
+    top: 150px; 
+    left:5px;
+    color: #3F4B3B;
+    background-color: #4ADBC8;
+    border-radius: 10px;
+}
+
+/*
+@media all and (orientation:landscape){
+
+    .HomePageCard{
+        width: 80%;
+        height: 10%;
+        min-height: 150px;
+        min-width: none;
+        top: none;
+    }
+    #esplora {
+        left: none;
+        top:10%;
+    }
+    #profilo{
+        top:none;
+    }
+
+    #chiaccheraConLaMascotte{
+        top:none;
+    }
+
+}
+*/

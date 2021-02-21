@@ -53,7 +53,7 @@ app.post("/api/login", (req, res) => {
             sameSite: true,
             maxAge: 1000 * expireTime,
           });
-          res.json({ idUtente: user.idUtente, nome: user.nome, cognome: user.cognome, email: user.email, proPic:user.proPic });
+          res.json({ idUtente: user.idUtente});
         }
       }
     })
@@ -104,7 +104,24 @@ app.post('/api/post', (req,res) => {
   }
 });
 
+app.post('/api/user', (req,res) => {
+  const newAccount = req.body;
+  if(!newAccount){
+      res.status(400).end();
+  } else {
+      userDao.createUser(newAccount)
+      .then((userId) => {
+        res.status(201).json({"userId" : userId});
+      })
+      .catch((err) => {
+          res.status(500).json({errors: [{'param': 'Server', 'msg': err}],})
+      });
+  }
+});
+
 app.get('/api/profile/:idUtente', (req, res) => {
+  //console.log("lui");
+  //console.log(req.params.idUtente);
   userDao.getProfile(req.params.idUtente)
     .then((profile) => {
     res.json(profile);
